@@ -1,0 +1,434 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  invincible
+
+  Sample SAM Template for invincible
+
+Parameters:
+  MongoUri:
+    Type: String
+    Description: MongoDB URI connection string
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 30
+    Runtime: nodejs18.x
+    Architectures:
+      - x86_64
+
+Resources:
+  CreateNicheFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: createNiche.lambdaHandler
+      Events:
+        CreateNiche:
+          Type: Api
+          Properties:
+            Path: /niche
+            Method: post
+      Environment:
+        Variables:
+          MongoUri: !Ref MongoUri
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - functions/Niche/createNiche.ts
+
+  GetNicheFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: getNiche.lambdaHandler
+      Events:
+        CreateNiche:
+          Type: Api
+          Properties:
+            Path: /niche/{id}
+            Method: get
+      Environment:
+        Variables:
+          MongoUri: !Ref MongoUri
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - functions/Niche/getNiche.ts
+
+  AddIGPageToNicheFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: addIGPageToNiche.lambdaHandler
+      Events:
+        AddIGPageToNiche:
+          Type: Api
+          Properties:
+            Path: /niche/addPage/{nicheId}/{pageId}
+            Method: put
+      Environment:
+        Variables:
+          MongoUri: !Ref MongoUri
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - functions/Niche/addIGPageToNiche.ts
+
+  CreateNicheApifyDatasetStatusFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: createNicheApifyDatasetStatus.lambdaHandler
+      Events:
+        CreateNicheApifyDatasetStatus:
+          Type: Api
+          Properties:
+            Path: /nicheApifyDatasetStatus
+            Method: post
+      Environment:
+        Variables:
+          MongoUri: !Ref MongoUri
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - functions/NicheApifyDatasetStatus/createNicheApifyDatasetStatus.ts
+
+  # <------------------- RawPost Start Point ----------------------->
+
+  CreateRawPostsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: createRawPosts.lambdaHandler
+      Events:
+        CreateRawPosts:
+          Type: Api
+          Properties:
+            Path: /rawPosts
+            Method: post
+      Environment:
+        Variables:
+          MongoUri: !Ref MongoUri
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - functions/RawPost/createRawPosts.ts
+
+  GetNicheRawPostsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: getNicheRawPosts.lambdaHandler
+      Events:
+        CreateRawPosts:
+          Type: Api
+          Properties:
+            Path: /rawPosts/{nicheId}
+            Method: get
+      Environment:
+        Variables:
+          MongoUri: !Ref MongoUri
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - functions/RawPost/getNicheRawPosts.ts
+
+  GetMonthNicheRawPostsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: getMonthNicheRawPosts.lambdaHandler
+      Events:
+        CreateRawPosts:
+          Type: Api
+          Properties:
+            Path: /rawPosts/month/{nicheId}/{month}/{year}
+            Method: get
+      Environment:
+        Variables:
+          MongoUri: !Ref MongoUri
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - functions/RawPost/getMonthNicheRawPosts.ts
+
+  GetMonthNicheRawPostsWithPagesAssignedFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: getMonthNicheRawPostsWithPagesAssigned.lambdaHandler
+      Events:
+        CreateRawPosts:
+          Type: Api
+          Properties:
+            Path: /rawPosts/month/withPagesAssigned/{nicheId}/{month}/{year}
+            Method: get
+      Environment:
+        Variables:
+          MongoUri: !Ref MongoUri
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - functions/RawPost/getMonthNicheRawPostsWithPagesAssigned.ts
+
+  AddPagesToRawPostsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: addPagesToRawPosts.lambdaHandler
+      Events:
+        CreateRawPosts:
+          Type: Api
+          Properties:
+            Path: /rawPosts/addPages
+            Method: post
+      Environment:
+        Variables:
+          MongoUri: !Ref MongoUri
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - functions/RawPost/addPagesToRawPosts.ts
+
+  UpdateRawPostsDateAndTimeFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: updateRawPostsDateAndTime.lambdaHandler
+      Events:
+        CreateRawPosts:
+          Type: Api
+          Properties:
+            Path: /rawPosts/updateDateAndTime
+            Method: put
+      Environment:
+        Variables:
+          MongoUri: !Ref MongoUri
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - functions/RawPost/updateRawPostsDateAndTime.ts
+
+  # <------------------- RawPost End Point ----------------------->
+
+  CreateCollectionIGPageFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: createCollectionIGPage.lambdaHandler
+      Events:
+        CreateRawPosts:
+          Type: Api
+          Properties:
+            Path: /collectionIGPage
+            Method: post
+      Environment:
+        Variables:
+          MongoUri: !Ref MongoUri
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - functions/CollectionIGPage/createCollectionIGPage.ts
+
+  GetCollectionIGPageUsingNameFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: getCollectionPageUsingName.lambdaHandler
+      Events:
+        CreateRawPosts:
+          Type: Api
+          Properties:
+            Path: /collectionIGPage/{collectionPageName}
+            Method: get
+      Environment:
+        Variables:
+          MongoUri: !Ref MongoUri
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - functions/CollectionIGPage/getCollectionPageUsingName.ts
+
+  AddCompletedCollectionPageToNicheApifyDatasetStatusFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: addCompletedCollectionPageToNicheApifyDatasetStatus.lambdaHandler
+      Events:
+        CreateRawPosts:
+          Type: Api
+          Properties:
+            Path: /collectionIGPage/add/completedCollectionPage
+            Method: put
+      Environment:
+        Variables:
+          MongoUri: !Ref MongoUri
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - functions/NicheApifyDatasetStatus/addCompletedCollectionPageToNicheApifyDatasetStatus.ts
+
+  CheckNichePostCollectionFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: checkNichePostCollection.lambdaHandler
+      Events:
+        CreateRawPosts:
+          Type: Api
+          Properties:
+            Path: /NicheApifyDatasetStatus/checkNichePostCollection/{nicheId}/{month}/{year}
+            Method: get
+      Environment:
+        Variables:
+          MongoUri: !Ref MongoUri
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - functions/NicheApifyDatasetStatus/checkNichePostCollection.ts
+
+  # <------------------- IGPage Start Point ----------------------->
+
+  GetNichePagesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: getNichePages.lambdaHandler
+      Events:
+        CreateNiche:
+          Type: Api
+          Properties:
+            Path: /igpage/niche/{nicheId}
+            Method: get
+      Environment:
+        Variables:
+          MongoUri: !Ref MongoUri
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - functions/IGPage/getNichePages.ts
+  # <------------------- IGPage End Point ----------------------->
+  # <------------------- Stage Start Point ----------------------->
+
+  CreateStageFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: createStage.lambdaHandler
+      Events:
+        CreateNiche:
+          Type: Api
+          Properties:
+            Path: /stage
+            Method: post
+      Environment:
+        Variables:
+          MongoUri: !Ref MongoUri
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - functions/Stage/createStage.ts
+
+  GetAllStagesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: getAllStages.lambdaHandler
+      Events:
+        CreateNiche:
+          Type: Api
+          Properties:
+            Path: /stage/all
+            Method: get
+      Environment:
+        Variables:
+          MongoUri: !Ref MongoUri
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - functions/Stage/getAllStages.ts
+# <------------------- Stage End Point ----------------------->
+
+# Outputs:
+# ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+# Find out more about other implicit resources you can reference within SAM
+# https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+# HelloWorldApi:
+#   Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+#   Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
+# HelloWorldFunction:
+#   Description: "Hello World Lambda Function ARN"
+#   Value: !GetAtt HelloWorldFunction.Arn
+# HelloWorldFunctionIamRole:
+#   Description: "Implicit IAM Role created for Hello World function"
+#   Value: !GetAtt HelloWorldFunctionRole.Arn
