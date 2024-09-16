@@ -15,7 +15,7 @@ const envs = {
 };
 
 const functionEnvMapping = {
-  UploadMediaContainerCallerFunction: ["InvincibleUrl"],
+  UploadMediaContainerCallerFunction: ["ENV", "InvincibleUrl"],
 };
 
 const createEnvFile = (env, path) => {

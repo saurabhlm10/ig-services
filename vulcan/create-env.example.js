@@ -20,6 +20,7 @@ const envs = {
 
 const functionEnvMapping = {
   AssignPagesToRawPostsFunction: [
+    "ENV",
     "InvincibleUrl",
     "KairosQueueUrl",
     "SQSExecutionRoleArn",

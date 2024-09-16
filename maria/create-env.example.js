@@ -22,12 +22,13 @@ const envs = {
 
 const functionEnvMapping = {
   AddDatasetIDToQueueFunction: [
+    "ENV",
     "InvincibleUrl",
     "MariaQueueUrl",
     "VulcanQueueUrl",
     "SQSExecutionRoleArn",
   ],
-  AddPostsToDBFunction: ["InvincibleUrl", "VulcanQueueUrl"],
+  AddPostsToDBFunction: ["ENV", "InvincibleUrl", "VulcanQueueUrl"],
 };
 
 const createEnvFile = (env, path) => {

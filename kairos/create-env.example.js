@@ -17,7 +17,7 @@ const envs = {
 };
 
 const functionEnvMapping = {
-  SchedulePostsFunction: ["InvincibleUrl", "SQSExecutionRoleArn"],
+  SchedulePostsFunction: ["ENV", "InvincibleUrl", "SQSExecutionRoleArn"],
 };
 
 const createEnvFile = (env, path) => {
