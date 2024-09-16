@@ -5,10 +5,12 @@ const prodPath = "./prod.env.json";
 
 const envs = {
   dev: {
+    ENV: "dev",
     InvincibleUrl: "",
     SQSExecutionRoleArn: "",
   },
   prod: {
+    ENV: "prod",
     InvincibleUrl: "",
     SQSExecutionRoleArn: "",
   },

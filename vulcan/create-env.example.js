@@ -5,11 +5,13 @@ const prodPath = "./prod.env.json";
 
 const envs = {
   dev: {
+    ENV: "dev",
     InvincibleUrl: "",
     KairosQueueUrl: "",
     SQSExecutionRoleArn: "",
   },
   prod: {
+    ENV: "prod",
     InvincibleUrl: "",
     KairosQueueUrl: "",
     SQSExecutionRoleArn: "",

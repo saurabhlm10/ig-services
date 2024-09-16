@@ -5,9 +5,11 @@ const prodPath = "./prod.env.json";
 
 const envs = {
   dev: {
+    ENV: "dev",
     MongoUri: "",
   },
   prod: {
+    ENV: "prod",
     MongoUri: "",
   },
 };
