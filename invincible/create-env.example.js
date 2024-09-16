@@ -30,6 +30,7 @@ const functionEnvMapping = {
   GetNichePagesFunction: ["MongoUri"],
   CreateStageFunction: ["MongoUri"],
   GetAllStagesFunction: ["MongoUri"],
+  GetAllPagesFunction: ["MongoUri"],
 };
 
 const createEnvFile = (env, path) => {
