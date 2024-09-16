@@ -12,3 +12,7 @@ export const getNichePages = async (data: IGetNichePagesParams) => {
     const { nicheId } = data;
     return IGPageModel.find({ nicheId: new mongoose.Types.ObjectId(nicheId) });
 };
+
+export const getAllPages = async () => {
+    return IGPageModel.find();
+};

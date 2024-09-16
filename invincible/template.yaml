@@ -253,6 +253,8 @@ Resources:
 
   # <------------------- RawPost End Point ----------------------->
 
+  # <------------------- CollectionIGPage Start Point ----------------------->
+
   CreateCollectionIGPageFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -369,6 +371,30 @@ Resources:
         Sourcemap: true
         EntryPoints:
           - functions/IGPage/getNichePages.ts
+
+  GetAllPagesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: getAllPages.lambdaHandler
+      Events:
+        CreateNiche:
+          Type: Api
+          Properties:
+            Path: /igpage/all
+            Method: get
+      Environment:
+        Variables:
+          MongoUri: !Ref MongoUri
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - functions/IGPage/getAllPages.ts
+
   # <------------------- IGPage End Point ----------------------->
   # <------------------- Stage Start Point ----------------------->
 
