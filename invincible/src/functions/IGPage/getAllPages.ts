@@ -1,11 +1,10 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { APIGatewayProxyResult } from 'aws-lambda';
 import { connectToDB } from '../../config/db.config';
-import { validate } from '../../validator';
 import { errorHandler } from '../../utils/errorHandler.util';
 import { successReturn } from '../../utils/successReturn.util';
-import { getAllPages, getNichePages } from '../../repository/igpage.repository';
+import { getAllPages } from '../../repository/igpage.repository';
 
-export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+export const lambdaHandler = async (): Promise<APIGatewayProxyResult> => {
     try {
         await connectToDB();
 
