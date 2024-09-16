@@ -6,7 +6,7 @@ export async function apiHandler(method: string, url: string, data: any = null, 
     try {
         const response = await axios({
             method,
-            url: `${invincibleUrl} +  ${url}`,
+            url: invincibleUrl + url,
             data,
             headers,
         });
