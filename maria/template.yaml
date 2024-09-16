@@ -18,6 +18,9 @@ Parameters:
   SQSExecutionRoleArn:
     Type: String
     Description: SQS Execution Role Arn
+  ENV:
+    Type: String
+    Description: Environment
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
@@ -43,6 +46,7 @@ Resources:
             Method: post
       Environment:
         Variables:
+          ENV: !Ref ENV
           InvincibleUrl: !Ref InvincibleUrl
           MariaQueueUrl: !Ref MariaQueueUrl
           VulcanQueueUrl: !Ref VulcanQueueUrl
@@ -71,6 +75,7 @@ Resources:
       #     BatchSize: 10
       Environment:
         Variables:
+          ENV: !Ref ENV
           InvincibleUrl: !Ref InvincibleUrl
           VulcanQueueUrl: !Ref VulcanQueueUrl
     Metadata: # Manage esbuild properties

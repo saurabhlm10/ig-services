@@ -9,6 +9,9 @@ Parameters:
   MongoUri:
     Type: String
     Description: MongoDB URI connection string
+  ENV:
+    Type: String
+    Description: Environment
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
@@ -32,7 +35,9 @@ Resources:
             Method: post
       Environment:
         Variables:
+          ENV: !Ref ENV
           MongoUri: !Ref MongoUri
+
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
       BuildProperties:
@@ -55,6 +60,7 @@ Resources:
             Method: get
       Environment:
         Variables:
+          ENV: !Ref ENV
           MongoUri: !Ref MongoUri
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
@@ -78,6 +84,7 @@ Resources:
             Method: put
       Environment:
         Variables:
+          ENV: !Ref ENV
           MongoUri: !Ref MongoUri
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
@@ -101,6 +108,7 @@ Resources:
             Method: post
       Environment:
         Variables:
+          ENV: !Ref ENV
           MongoUri: !Ref MongoUri
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
@@ -126,6 +134,7 @@ Resources:
             Method: post
       Environment:
         Variables:
+          ENV: !Ref ENV
           MongoUri: !Ref MongoUri
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
@@ -149,6 +158,7 @@ Resources:
             Method: get
       Environment:
         Variables:
+          ENV: !Ref ENV
           MongoUri: !Ref MongoUri
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
@@ -172,6 +182,7 @@ Resources:
             Method: get
       Environment:
         Variables:
+          ENV: !Ref ENV
           MongoUri: !Ref MongoUri
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
@@ -195,6 +206,7 @@ Resources:
             Method: get
       Environment:
         Variables:
+          ENV: !Ref ENV
           MongoUri: !Ref MongoUri
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
@@ -218,6 +230,7 @@ Resources:
             Method: post
       Environment:
         Variables:
+          ENV: !Ref ENV
           MongoUri: !Ref MongoUri
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
@@ -241,6 +254,7 @@ Resources:
             Method: put
       Environment:
         Variables:
+          ENV: !Ref ENV
           MongoUri: !Ref MongoUri
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
@@ -268,6 +282,7 @@ Resources:
             Method: post
       Environment:
         Variables:
+          ENV: !Ref ENV
           MongoUri: !Ref MongoUri
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
@@ -291,6 +306,7 @@ Resources:
             Method: get
       Environment:
         Variables:
+          ENV: !Ref ENV
           MongoUri: !Ref MongoUri
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
@@ -314,6 +330,7 @@ Resources:
             Method: put
       Environment:
         Variables:
+          ENV: !Ref ENV
           MongoUri: !Ref MongoUri
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
@@ -337,6 +354,7 @@ Resources:
             Method: get
       Environment:
         Variables:
+          ENV: !Ref ENV
           MongoUri: !Ref MongoUri
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
@@ -362,6 +380,7 @@ Resources:
             Method: get
       Environment:
         Variables:
+          ENV: !Ref ENV
           MongoUri: !Ref MongoUri
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
@@ -385,6 +404,7 @@ Resources:
             Method: get
       Environment:
         Variables:
+          ENV: !Ref ENV
           MongoUri: !Ref MongoUri
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
@@ -411,6 +431,7 @@ Resources:
             Method: post
       Environment:
         Variables:
+          ENV: !Ref ENV
           MongoUri: !Ref MongoUri
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
@@ -434,6 +455,7 @@ Resources:
             Method: get
       Environment:
         Variables:
+          ENV: !Ref ENV
           MongoUri: !Ref MongoUri
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
