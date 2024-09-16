@@ -69,7 +69,6 @@ interface AddPagesToRawPostsBody {
 }
 
 export const lambdaHandler = async (event: SQSEvent): Promise<APIGatewayProxyResult> => {
-    const invincibleUrl = process.env.InvincibleUrl || '';
     const kairosQueueUrl = process.env.KairosQueueUrl || '';
     const message = JSON.parse(event.Records[0].body) as Message;
 
@@ -80,7 +79,7 @@ export const lambdaHandler = async (event: SQSEvent): Promise<APIGatewayProxyRes
         const { month, year } = getMonthAndYear();
 
         // Get All Month Niche Raw Posts
-        const getAllMonthNicheRawPostsUrl = `${invincibleUrl}/rawPosts/month/${nicheId}/${month}/${year}`;
+        const getAllMonthNicheRawPostsUrl = `/rawPosts/month/${nicheId}/${month}/${year}`;
 
         const monthNicheRawPosts: RawPostItem[] = await apiHandler('get', getAllMonthNicheRawPostsUrl);
 
@@ -100,12 +99,12 @@ export const lambdaHandler = async (event: SQSEvent): Promise<APIGatewayProxyRes
         });
 
         // Get All Niche Pages
-        const getNichePagesUrl = `${invincibleUrl}/igpage/niche/${nicheId}`;
+        const getNichePagesUrl = `/igpage/niche/${nicheId}`;
 
         const nichePages: NichePage[] = await apiHandler('get', getNichePagesUrl);
 
         // Get Posts Required For Each Stage
-        const getStagesUrl = `${invincibleUrl}/stage/all`;
+        const getStagesUrl = `/stage/all`;
 
         const stages: Stage[] = await apiHandler('get', getStagesUrl);
 
@@ -158,7 +157,7 @@ export const lambdaHandler = async (event: SQSEvent): Promise<APIGatewayProxyRes
                 addPagesToRawPostsBody.posts.push(item);
             });
 
-            const addPagesToRawPostsUrl = `${invincibleUrl}/rawPosts/addPages`;
+            const addPagesToRawPostsUrl = `/rawPosts/addPages`;
 
             const updatedPosts = await apiHandler('post', addPagesToRawPostsUrl, addPagesToRawPostsBody);
 

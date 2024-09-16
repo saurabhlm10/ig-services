@@ -2,10 +2,11 @@ import axios, { AxiosError } from 'axios';
 import CustomError from './CustomError.util';
 
 export async function apiHandler(method: string, url: string, data: any = null, headers: any = {}) {
+    const invincibleUrl = process.env.InvincibleUrl as string;
     try {
         const response = await axios({
             method,
-            url,
+            url: `${invincibleUrl} +  ${url}`,
             data,
             headers,
         });

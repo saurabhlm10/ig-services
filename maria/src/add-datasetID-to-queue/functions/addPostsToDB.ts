@@ -71,7 +71,6 @@ interface TempPostItem {
 }
 
 export const lambdaHandler = async (event: SQSEvent): Promise<APIGatewayProxyResult> => {
-    const invincibleUrl = process.env.InvincibleUrl;
     const vulcanQueueUrl = process.env.VulcanQueueUrl || '';
     const { months } = ENV;
     try {
@@ -169,14 +168,14 @@ export const lambdaHandler = async (event: SQSEvent): Promise<APIGatewayProxyRes
             }
         });
 
-        const createTempPostsUrl = invincibleUrl + '/rawPosts';
+        const createTempPostsUrl =   '/rawPosts';
 
         await apiHandler('post', createTempPostsUrl, createTempPostsInDBBody);
 
         // Get Collection Page ID Using Name
 
         const collectionPageName = datasetItems[0].channel.username;
-        const getCollectionPageUsingNameUrl = invincibleUrl + '/collectionIGPage/' + collectionPageName;
+        const getCollectionPageUsingNameUrl =   '/collectionIGPage/' + collectionPageName;
 
         const collectionPage = await apiHandler('get', getCollectionPageUsingNameUrl);
 
@@ -184,7 +183,7 @@ export const lambdaHandler = async (event: SQSEvent): Promise<APIGatewayProxyRes
 
         // Add Collection Page to completedCollectionPages
         const addCollectionPageToCompletedCollectionPagesUrl =
-            invincibleUrl + '/collectionIGPage/add/completedCollectionPage';
+              '/collectionIGPage/add/completedCollectionPage';
 
         const addCollectionPageToCompletedCollectionPagesBody = {
             nicheId,
@@ -201,7 +200,7 @@ export const lambdaHandler = async (event: SQSEvent): Promise<APIGatewayProxyRes
 
         // Check if Niche Post Collection is done
         const nichePostCollectionIsDoneUrl =
-            invincibleUrl + '/NicheApifyDatasetStatus/checkNichePostCollection/' + nicheId + '/' + month + '/' + year;
+              '/NicheApifyDatasetStatus/checkNichePostCollection/' + nicheId + '/' + month + '/' + year;
         const nichePostCollectionIsDoneResponse = await apiHandler('get', nichePostCollectionIsDoneUrl);
 
         // If Niche Post Collection is done put it in vulcan queue

@@ -48,7 +48,6 @@ interface IUpdatePostDateAndTimeBody {
 }
 
 export const lambdaHandler = async (event: SQSEvent): Promise<APIGatewayProxyResult> => {
-    const invincibleUrl = process.env.InvincibleUrl || '';
     const message = JSON.parse(event.Records[0].body) as Message;
 
     const { nicheId } = message;
@@ -61,14 +60,14 @@ export const lambdaHandler = async (event: SQSEvent): Promise<APIGatewayProxyRes
         const { month, year } = getMonthAndYear();
 
         // Get All Month Niche Raw Posts With Pages Assigned
-        const getAllMonthNicheRawPostsWithPagesAssignedUrl = `${invincibleUrl}/rawPosts/month/withPagesAssigned/${nicheId}/${month}/${year}`;
+        const getAllMonthNicheRawPostsWithPagesAssignedUrl = `/rawPosts/month/withPagesAssigned/${nicheId}/${month}/${year}`;
 
         const rawPosts: RawPostItem[] = await apiHandler('get', getAllMonthNicheRawPostsWithPagesAssignedUrl);
 
         if (!rawPosts.length) return successReturn(`No Posts To Schedule For NicheId: ${nicheId}`);
 
         // Get All Niche Pages
-        const getNichePagesUrl = `${invincibleUrl}/igpage/niche/${nicheId}`;
+        const getNichePagesUrl = `/igpage/niche/${nicheId}`;
 
         const nichePages: NichePage[] = await apiHandler('get', getNichePagesUrl);
 
@@ -130,7 +129,7 @@ export const lambdaHandler = async (event: SQSEvent): Promise<APIGatewayProxyRes
             tracker[page.name] = pageTracker;
         });
 
-        const updatePostsDateAndTimeUrl = `${invincibleUrl}/rawPosts/updateDateAndTime`;
+        const updatePostsDateAndTimeUrl = `/rawPosts/updateDateAndTime`;
 
         const { modifiedCount } = await apiHandler('put', updatePostsDateAndTimeUrl, updatePostsDateAndTimeBody);
 

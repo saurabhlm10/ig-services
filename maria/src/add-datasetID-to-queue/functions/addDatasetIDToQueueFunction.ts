@@ -10,7 +10,6 @@ import { getMonthAndYear } from '../helpers/getMonthAndYear';
 const sqs = new AWS.SQS();
 
 export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    const invincibleUrl = process.env.InvincibleUrl || '';
     const queueUrl = process.env.MariaQueueUrl || '';
 
     try {
@@ -23,7 +22,7 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
         validate('nicheId', nicheId);
         validate('datasetId', datasetId);
 
-        const getUrl = invincibleUrl + '/niche/' + data.nicheId;
+        const getUrl =   '/niche/' + data.nicheId;
 
         const niche = await apiHandler('get', getUrl);
 
@@ -45,7 +44,7 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
 
         const queueMessage = await sqs.sendMessage(params).promise();
 
-        const postUrl = invincibleUrl + '/nicheApifyDatasetStatus';
+        const postUrl =   '/nicheApifyDatasetStatus';
 
         const createdNicheApifyDatasetStatus = await apiHandler('post', postUrl, statusBody);
 
