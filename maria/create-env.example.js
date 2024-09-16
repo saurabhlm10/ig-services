@@ -5,24 +5,16 @@ const prodPath = "./prod.env.json";
 
 const envs = {
   dev: {
-    InvincibleUrl: "",
+    InvincibleUrl: "d",
     MariaQueueUrl: "",
     VulcanQueueUrl: "",
     SQSExecutionRoleArn: "",
-    ApifyToken: "",
-    CloudinaryApiKey: "",
-    CloudinaryApiSecret: "",
-    CloudinaryCloudName: "",
   },
   prod: {
     InvincibleUrl: "",
     MariaQueueUrl: "",
     VulcanQueueUrl: "",
     SQSExecutionRoleArn: "",
-    ApifyToken: "",
-    CloudinaryApiKey: "",
-    CloudinaryApiSecret: "",
-    CloudinaryCloudName: "",
   },
 };
 
@@ -33,14 +25,7 @@ const functionEnvMapping = {
     "VulcanQueueUrl",
     "SQSExecutionRoleArn",
   ],
-  AddPostsToDBFunction: [
-    "InvincibleUrl",
-    "VulcanQueueUrl",
-    "ApifyToken",
-    "CloudinaryApiKey",
-    "CloudinaryApiSecret",
-    "CloudinaryCloudName",
-  ],
+  AddPostsToDBFunction: ["InvincibleUrl", "VulcanQueueUrl"],
 };
 
 const createEnvFile = (env, path) => {

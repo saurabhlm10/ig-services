@@ -18,18 +18,6 @@ Parameters:
   SQSExecutionRoleArn:
     Type: String
     Description: SQS Execution Role Arn
-  ApifyToken:
-    Type: String
-    Description: Apify Token
-  CloudinaryApiKey:
-    Type: String
-    Description: Cloudinary Api Key
-  CloudinaryApiSecret:
-    Type: String
-    Description: Cloudinary Api Secret
-  CloudinaryCloudName:
-    Type: String
-    Description: Cloudinary Cloud Name
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
@@ -85,10 +73,6 @@ Resources:
         Variables:
           InvincibleUrl: !Ref InvincibleUrl
           VulcanQueueUrl: !Ref VulcanQueueUrl
-          ApifyToken: !Ref ApifyToken
-          CloudinaryApiKey: !Ref CloudinaryApiKey
-          CloudinaryApiSecret: !Ref CloudinaryApiSecret
-          CloudinaryCloudName: !Ref CloudinaryCloudName
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
       BuildProperties:
