@@ -21,8 +21,6 @@ export const lambdaHandler = async (event: Event): Promise<APIGatewayProxyResult
     const quillQueueUrl = process.env.QuillQueueUrl as string;
     const functionName = process.env.AWS_LAMBDA_FUNCTION_NAME as string;
 
-    console.log(event.type);
-
     try {
         if (event?.type && event.type === 'process') {
             // This is a subsequent invocation
