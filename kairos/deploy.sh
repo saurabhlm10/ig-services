@@ -40,7 +40,7 @@ echo "Deploying with parameters: $PARAM_OVERRIDES"
 # Deploy using SAM
 sam deploy \
     --parameter-overrides $PARAM_OVERRIDES \
-    --stack-name "vulcan-${env}" \
+    --stack-name "kairos-${env}" \
     --no-confirm-changeset \
 #     --no-fail-on-empty-changeset
 
