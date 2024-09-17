@@ -7,15 +7,19 @@ const envs = {
   dev: {
     ENV: "dev",
     InvincibleUrl: "",
+    QuillQueueUrl: "",
+    SQSExecutionRoleArn: "",
   },
   prod: {
     ENV: "prod",
     InvincibleUrl: "",
+    QuillQueueUrl: "",
+    SQSExecutionRoleArn: "",
   },
 };
 
 const functionEnvMapping = {
-  UploadMediaContainerCallerFunction: ["ENV", "InvincibleUrl"],
+  UploadMediaContainerCallerFunction: ["ENV", "InvincibleUrl", "QuillQueueUrl"],
 };
 
 const createEnvFile = (env, path) => {
