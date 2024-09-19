@@ -28,3 +28,11 @@ export interface IUpdatePostsDateAndTimeParams {
         day: number;
     }[];
 }
+
+export interface IGetPostParams {
+    page: string;
+    time: string;
+    day: number;
+    month: string;
+    year: number;
+}
