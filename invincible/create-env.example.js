@@ -43,6 +43,12 @@ const functionEnvMapping = {
   GetSecretFunction: ["ENV", "MongoUri"],
   UpdateSecretFunction: ["ENV", "MongoUri", "CryptoSecret"],
   DeleteSecretFunction: ["ENV", "MongoUri"],
+  AddPageToBatchFunction: ["ENV", "MongoUri"],
+  CreateBatchFunction: ["ENV", "MongoUri", "CryptoSecret"],
+  GetAllBatchesFunction: ["ENV", "MongoUri"],
+  GetPageAccessTokenFunction: ["ENV", "MongoUri"],
+  UpdateAccessTokenFunction: ["ENV", "MongoUri", "CryptoSecret"],
+  UpdateBatchPagesFunction: ["ENV", "MongoUri"],
 };
 
 const createEnvFile = (env, path) => {

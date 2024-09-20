@@ -593,7 +593,155 @@ Resources:
         Sourcemap: true
         EntryPoints:
           - functions/Secret/deleteSecret.ts
-# <------------------- Secret End Point ----------------------->
+  # <------------------- Secret End Point ----------------------->
+
+  # <------------------- Batch Start Point --------------------->
+  AddPageToBatchFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: addPageToBatch.lambdaHandler
+      Events:
+        CreateBatch:
+          Type: Api
+          Properties:
+            Path: /batch/page
+            Method: post
+      Environment:
+        Variables:
+          ENV: !Ref ENV
+          MongoUri: !Ref MongoUri
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - functions/Batch/addPageToBatch.ts
+
+  CreateBatchFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: createBatch.lambdaHandler
+      Events:
+        CreateBatch:
+          Type: Api
+          Properties:
+            Path: /batch
+            Method: post
+      Environment:
+        Variables:
+          ENV: !Ref ENV
+          MongoUri: !Ref MongoUri
+          CryptoSecret: !Ref CryptoSecret
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - functions/Batch/createBatch.ts
+
+  GetAllBatchesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: getAllBatches.lambdaHandler
+      Events:
+        GetAllBatches:
+          Type: Api
+          Properties:
+            Path: /batch
+            Method: get
+      Environment:
+        Variables:
+          ENV: !Ref ENV
+          MongoUri: !Ref MongoUri
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - functions/Batch/getAllBatches.ts
+
+  GetPageAccessTokenFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: getPageAccessToken.lambdaHandler
+      Events:
+        GetPageAccessToken:
+          Type: Api
+          Properties:
+            Path: /page/{page}/access-token
+            Method: get
+      Environment:
+        Variables:
+          ENV: !Ref ENV
+          MongoUri: !Ref MongoUri
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - functions/Batch/getPageAccessToken.ts
+
+  UpdateAccessTokenFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: updateAccessToken.lambdaHandler
+      Events:
+        UpdateAccessToken:
+          Type: Api
+          Properties:
+            Path: /batch/access-token
+            Method: put
+      Environment:
+        Variables:
+          ENV: !Ref ENV
+          MongoUri: !Ref MongoUri
+          CryptoSecret: !Ref CryptoSecret
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - functions/Batch/updateAccessToken.ts
+
+  UpdateBatchPagesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: updateBatchPages.lambdaHandler
+      Events:
+        UpdateBatchPages:
+          Type: Api
+          Properties:
+            Path: /batch/pages
+            Method: put
+      Environment:
+        Variables:
+          ENV: !Ref ENV
+          MongoUri: !Ref MongoUri
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - functions/Batch/updateBatchPages.ts
+# <------------------- Batch End Point ----------------------->
 
 # Outputs:
 # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
