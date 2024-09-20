@@ -15,7 +15,7 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
     try {
         await connectToDB();
 
-        const body = JSON.parse(event.body || '') as Body;
+        const body = JSON.parse(event.body ?? '') as Body;
 
         const { name, postsRequired } = body;
 

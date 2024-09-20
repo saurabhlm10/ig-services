@@ -12,6 +12,9 @@ Parameters:
   ENV:
     Type: String
     Description: Environment
+  CryptoSecret:
+    Type: String
+    Description: crypto-js encryption secret
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
@@ -489,7 +492,108 @@ Resources:
         Sourcemap: true
         EntryPoints:
           - functions/Stage/getAllStages.ts
-# <------------------- Stage End Point ----------------------->
+  # <------------------- Stage End Point ----------------------->
+
+  # <------------------- Secret Start Point --------------------->
+
+  CreateSecretFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: createSecret.lambdaHandler
+      Events:
+        CreateNiche:
+          Type: Api
+          Properties:
+            Path: /secret
+            Method: post
+      Environment:
+        Variables:
+          ENV: !Ref ENV
+          MongoUri: !Ref MongoUri
+          CryptoSecret: !Ref CryptoSecret
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - functions/Secret/createSecret.ts
+
+  GetSecretFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: getSecret.lambdaHandler
+      Events:
+        CreateNiche:
+          Type: Api
+          Properties:
+            Path: /secret
+            Method: get
+      Environment:
+        Variables:
+          ENV: !Ref ENV
+          MongoUri: !Ref MongoUri
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - functions/Secret/getSecret.ts
+
+  UpdateSecretFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: updateSecret.lambdaHandler
+      Events:
+        CreateNiche:
+          Type: Api
+          Properties:
+            Path: /secret
+            Method: put
+      Environment:
+        Variables:
+          ENV: !Ref ENV
+          MongoUri: !Ref MongoUri
+          CryptoSecret: !Ref CryptoSecret
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - functions/Secret/updateSecret.ts
+
+  DeleteSecretFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: deleteSecret.lambdaHandler
+      Events:
+        CreateNiche:
+          Type: Api
+          Properties:
+            Path: /secret
+            Method: delete
+      Environment:
+        Variables:
+          ENV: !Ref ENV
+          MongoUri: !Ref MongoUri
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - functions/Secret/deleteSecret.ts
+# <------------------- Secret End Point ----------------------->
 
 # Outputs:
 # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function

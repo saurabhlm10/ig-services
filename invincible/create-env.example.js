@@ -7,10 +7,12 @@ const envs = {
   dev: {
     ENV: "dev",
     MongoUri: "",
+    CryptoSecret: "",
   },
   prod: {
     ENV: "prod",
     MongoUri: "",
+    CryptoSecret: "",
   },
 };
 
@@ -36,6 +38,11 @@ const functionEnvMapping = {
   CreateStageFunction: ["ENV", "MongoUri"],
   GetAllStagesFunction: ["ENV", "MongoUri"],
   GetAllPagesFunction: ["ENV", "MongoUri"],
+  GetPostFunction: ["ENV", "MongoUri"],
+  CreateSecretFunction: ["ENV", "MongoUri", "CryptoSecret"],
+  GetSecretFunction: ["ENV", "MongoUri"],
+  UpdateSecretFunction: ["ENV", "MongoUri", "CryptoSecret"],
+  DeleteSecretFunction: ["ENV", "MongoUri"],
 };
 
 const createEnvFile = (env, path) => {

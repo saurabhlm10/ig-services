@@ -1,3 +1,4 @@
 export interface ICheckIGPageExistsParams {
-    id: string;
+    id?: string;
+    name?: string;
 }

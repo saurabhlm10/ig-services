@@ -4,8 +4,10 @@ import { ICheckIGPageExistsParams } from '../types/IGPage.type';
 import { IGetNichePagesParams } from '../types/Niche.type';
 
 export const checkIGPageExists = async (data: ICheckIGPageExistsParams) => {
-    const { id } = data;
-    return IGPageModel.exists({ _id: id });
+    const { id, name } = data;
+
+    if (name) return IGPageModel.exists({ name });
+    else return IGPageModel.exists({ _id: id });
 };
 
 export const getNichePages = async (data: IGetNichePagesParams) => {
