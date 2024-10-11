@@ -31,3 +31,7 @@ export const updateNicheById = async (data: IUpdateNicheByIdParams) => {
 
     return Niche.findByIdAndUpdate(id, updateData, options);
 };
+
+export const getAllNiches = () => {
+    return Niche.find();
+};
