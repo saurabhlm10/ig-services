@@ -1,3 +1,6 @@
+import { UpdateQuery } from 'mongoose';
+import { IRawPost } from '../models/RawPost.model';
+
 export interface IGetAllNicheRawPosts {
     nicheId: string;
 }
@@ -35,4 +38,9 @@ export interface IGetPostParams {
     day: number;
     month: string;
     year: number;
+}
+
+export interface IUpdateRawPostParams {
+    id: string;
+    updateData: UpdateQuery<IRawPost>;
 }

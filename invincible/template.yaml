@@ -292,6 +292,30 @@ Resources:
         EntryPoints:
           - functions/RawPost/getPost.ts
 
+  UpdateRawPostFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: updateRawPost.lambdaHandler
+      Events:
+        CreateRawPosts:
+          Type: Api
+          Properties:
+            Path: /rawPosts
+            Method: put
+      Environment:
+        Variables:
+          ENV: !Ref ENV
+          MongoUri: !Ref MongoUri
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - functions/RawPost/updateRawPost.ts
+
   # <------------------- RawPost End Point ----------------------->
 
   # <------------------- CollectionIGPage Start Point ----------------------->

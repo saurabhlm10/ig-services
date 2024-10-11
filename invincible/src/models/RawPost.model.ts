@@ -1,7 +1,47 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, Types } from 'mongoose';
 import { ENV } from '../constants';
 
 const { months } = ENV;
+
+type Month =
+    | 'January'
+    | 'February'
+    | 'March'
+    | 'April'
+    | 'May'
+    | 'June'
+    | 'July'
+    | 'August'
+    | 'September'
+    | 'October'
+    | 'November'
+    | 'December';
+
+export interface IRawPost {
+    originalViews: number;
+    nicheId: Types.ObjectId;
+    source_url: string;
+    source: 'tiktok';
+    caption: string;
+    video_url?: string;
+    cover_url?: string;
+    media_url?: string;
+    mediaType: 'REELS';
+    ownerUsername: string;
+    originalVideoPublishSchedule: {
+        month: Month;
+        year: number;
+    };
+    schedule: {
+        time?: PostTimeEnum;
+        day?: number;
+        month: Month;
+        year: number;
+    };
+    page?: string;
+    createdAt: Date;
+    updatedAt: Date;
+}
 
 enum PostTimeEnum {
     SIX_PM = '6PM',
@@ -90,12 +130,15 @@ const rawPostsSchema = new Schema(
         page: {
             type: String,
         },
+        creation_id: String,
+        published_id: String,
+        errorMessage: String,
     },
     {
         timestamps: true,
     },
 );
 
-const RawPost = mongoose.model('RawPost', rawPostsSchema);
+const RawPost = mongoose.model<IRawPost>('RawPost', rawPostsSchema);
 
 export default RawPost;

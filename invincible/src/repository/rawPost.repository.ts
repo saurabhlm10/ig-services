@@ -7,6 +7,7 @@ import {
     IGetMonthNicheRawPostsWithPageAssignedParams,
     IGetPostParams,
     IUpdatePostsDateAndTimeParams,
+    IUpdateRawPostParams,
 } from '../types/RawPost.type';
 
 export const getAllNicheRawPosts = async (data: IGetAllNicheRawPosts) => {
@@ -52,6 +53,11 @@ export const addPagesToRawPosts = async (data: IAddPagesToRawPostsParams) => {
     }));
 
     return RawPost.bulkWrite(operations);
+};
+
+export const updateRawPost = async (data: IUpdateRawPostParams) => {
+    const { id, updateData } = data;
+    return RawPost.findByIdAndUpdate(id, updateData, { new: true });
 };
 
 export const updatePostsDateAndTime = (updateBody: IUpdatePostsDateAndTimeParams) => {
