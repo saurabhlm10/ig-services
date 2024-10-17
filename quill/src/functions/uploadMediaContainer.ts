@@ -127,8 +127,6 @@ export const lambdaHandler = async (event: SQSEvent): Promise<APIGatewayProxyRes
                 ig_user_id,
             };
 
-            console.log('publishPostMessageBody', publishPostMessageBody);
-
             // Add to publish delay queue
             const params = {
                 MessageBody: JSON.stringify(publishPostMessageBody),

@@ -1,14 +1,22 @@
 import axios, { AxiosError } from 'axios';
 import CustomError from './CustomError.util';
 
-export async function apiHandler(method: string, url: string, data: any = null, headers: any = {}) {
+export async function apiHandler(
+    method: string,
+    url: string,
+    data: any = null,
+    headers: any = {},
+    params: object = {},
+) {
     const invincibleUrl = process.env.InvincibleUrl as string;
+
     try {
         const response = await axios({
             method,
             url: invincibleUrl + url,
             data,
             headers,
+            params,
         });
 
         return response.data.data;

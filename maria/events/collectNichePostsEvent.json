@@ -1,0 +1,20 @@
+{
+  "Records": [
+    {
+      "messageId": "19dd0b57-b21e-4ac1-bd88-01bbb068cb78",
+      "receiptHandle": "MessageReceiptHandle",
+      "body": "{\"collectionPages\":[],\"nicheId\":\"6651bee08e46860271ef24ff\",\"nicheName\":\"frenchie\",\"pages\":[\"65f0bc4a59a55a4764c96499\",\"65a8909d8769a678809afce1\",\"65a890bd8769a678809afce9\"],\"encryptedApifyKey\":\"U2FsdGVkX1+aLUHaJsM1I93LlLe+pxicopWsOt3D7mZHKuRpEXONaVQ3teu6oqhpqYUTOdln4el1wFqpy5IE1w==\"}",
+      "attributes": {
+        "ApproximateReceiveCount": "1",
+        "SentTimestamp": "1523232000000",
+        "SenderId": "123456789012",
+        "ApproximateFirstReceiveTimestamp": "1523232000001"
+      },
+      "messageAttributes": {},
+      "md5OfBody": "7b270e59b47ff90a553787216d55d91d",
+      "eventSource": "aws:sqs",
+      "eventSourceARN": "arn:aws:sqs:us-east-1:123456789012:MyQueue",
+      "awsRegion": "us-east-1"
+    }
+  ]
+}

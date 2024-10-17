@@ -12,6 +12,8 @@ Parameters:
   MariaQueueUrl:
     Type: String
     Description: Maria Queue Url
+  MariaCollectTriggerQueueUrl:
+    Type: String
   VulcanQueueUrl:
     Type: String
     Description: Vulcan Queue Url
@@ -86,6 +88,52 @@ Resources:
         Sourcemap: true
         EntryPoints:
           - functions/addPostsToDB.ts
+
+  CollectPostTriggerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/add-datasetID-to-queue/
+      Handler: collectPostTrigger.lambdaHandler
+      Role: !Ref SQSExecutionRoleArn
+      MemorySize: 1024
+      Events:
+        CollectPostsEvent:
+          Type: Api
+          Properties:
+            Path: /collect
+            Method: post
+      Environment:
+        Variables:
+          ENV: !Ref ENV
+          InvincibleUrl: !Ref InvincibleUrl
+          MariaCollectTriggerQueueUrl: !Ref MariaCollectTriggerQueueUrl
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - functions/collectPostTrigger.ts
+
+  CollectNichePostsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/add-datasetID-to-queue/
+      Handler: collectNichePosts.lambdaHandler
+      Role: !Ref SQSExecutionRoleArn
+      Environment:
+        Variables:
+          ENV: !Ref ENV
+          InvincibleUrl: !Ref InvincibleUrl
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - functions/collectNichePosts.ts
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function

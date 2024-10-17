@@ -440,6 +440,30 @@ Resources:
         EntryPoints:
           - functions/NicheApifyDatasetStatus/checkNichePostCollection.ts
 
+  GetNicheCollectionPagesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: getNicheCollectionPages.lambdaHandler
+      Events:
+        CreateRawPosts:
+          Type: Api
+          Properties:
+            Path: /collectionIGPages
+            Method: get
+      Environment:
+        Variables:
+          ENV: !Ref ENV
+          MongoUri: !Ref MongoUri
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - functions/CollectionIGPage/getNicheCollectionPages.ts
+
   # <------------------- IGPage Start Point ----------------------->
 
   GetNichePagesFunction:
