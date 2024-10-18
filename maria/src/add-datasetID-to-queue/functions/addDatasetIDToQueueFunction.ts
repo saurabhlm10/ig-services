@@ -10,10 +10,10 @@ import { getMonthAndYear } from '../helpers/getMonthAndYear';
 const sqs = new AWS.SQS();
 
 export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    const queueUrl = process.env.MariaQueueUrl || '';
+    const queueUrl = process.env.MariaQueueUrl ?? '';
 
     try {
-        const data: ApifyWebhook = JSON.parse(event.body || '');
+        const data: ApifyWebhook = JSON.parse(event.body ?? '');
 
         const { nicheId, resource } = data;
 
@@ -22,7 +22,7 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
         validate('nicheId', nicheId);
         validate('datasetId', datasetId);
 
-        const getUrl =   '/niche/' + data.nicheId;
+        const getUrl = '/niche/' + data.nicheId;
 
         const niche = await apiHandler('get', getUrl);
 
@@ -44,12 +44,7 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
 
         const queueMessage = await sqs.sendMessage(params).promise();
 
-        const postUrl =   '/nicheApifyDatasetStatus';
-
-        const createdNicheApifyDatasetStatus = await apiHandler('post', postUrl, statusBody);
-
-        return successReturn('Status created Successfully', {
-            createdNicheApifyDatasetStatus,
+        return successReturn('Message stored in Maria Queue', {
             messageId: queueMessage.MessageId,
         });
     } catch (err) {

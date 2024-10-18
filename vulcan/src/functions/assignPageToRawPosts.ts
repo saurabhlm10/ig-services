@@ -69,7 +69,7 @@ interface AddPagesToRawPostsBody {
 }
 
 export const lambdaHandler = async (event: SQSEvent): Promise<APIGatewayProxyResult> => {
-    const kairosQueueUrl = process.env.KairosQueueUrl || '';
+    const kairosQueueUrl = process.env.KairosQueueUrl ?? '';
     const message = JSON.parse(event.Records[0].body) as Message;
 
     const { nicheId } = message;

@@ -1,4 +1,5 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import mongoose from 'mongoose';
 import { errorHandler } from '../../utils/errorHandler.util';
 import { connectToDB } from '../../config/db.config';
 import { successReturn } from '../../utils/successReturn.util';
@@ -39,11 +40,15 @@ interface RawPostItem {
 
 export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     try {
+        mongoose.set('debug', true);
         await connectToDB();
+        console.log('MongoDB connection state:', mongoose.connection.readyState);
 
         const data = JSON.parse(event.body || '') as CreateRawPostsBody;
 
         const { nicheId, month, year, posts } = data;
+
+        console.log('posts', posts.length);
 
         const yearInNumber = Number(year);
 
@@ -55,31 +60,76 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
         if (!nicheExists) throw new CustomError('Niche not found', 404);
 
         const insertBody = posts.map((item) => {
+            const originalYear = Number(item.originalVideoPublishSchedule.year);
+            if (isNaN(originalYear)) {
+                console.warn(`Invalid year for item: ${item.source_url}`);
+            }
+
+            // Ensure the month is a valid enum value
+            const validMonths = [
+                'January',
+                'February',
+                'March',
+                'April',
+                'May',
+                'June',
+                'July',
+                'August',
+                'September',
+                'October',
+                'November',
+                'December',
+            ];
+            const originalMonth = validMonths.includes(item.originalVideoPublishSchedule.month)
+                ? item.originalVideoPublishSchedule.month
+                : 'January'; // Default to January if invalid
+
             return {
                 ...item,
                 originalViews: Number(item.originalViews),
-                nicheId,
+                nicheId: new mongoose.Types.ObjectId(nicheId),
                 originalVideoPublishSchedule: {
-                    ...item.originalVideoPublishSchedule,
-                    year: Number(item.originalVideoPublishSchedule.year),
+                    month: originalMonth,
+                    year: isNaN(originalYear) ? new Date().getFullYear() : originalYear, // Use current year as default if NaN
                 },
                 schedule: {
-                    month,
-                    year,
+                    month: validMonths.includes(month) ? month : 'January', // Ensure month is valid
+                    year: yearInNumber,
                 },
+                ownerUsername: item.ownerUsername || '', // Empty string if missing, as it's required
+                mediaType: 'REELS', // Default to 'REELS' as per your schema
             };
         });
 
-        // Total errors
+        console.log('insertBody', insertBody.length);
+        console.log('Sample input item:', JSON.stringify(insertBody[0], null, 2));
+
+        let insertedCount = 0;
         let insertionErrorCount = 0;
-        // Duplicate key errors
         let duplicateErrorCount = 0;
 
-        await RawPost.insertMany(insertBody, { ordered: false }).catch((error: any) => {
-            console.error('Error inserting documents:', error);
-            insertionErrorCount = error.results.length;
-            duplicateErrorCount = error.writeErrors.filter((err: any) => err.err.code === 11000).length;
+        try {
+            const result = await RawPost.insertMany(insertBody, { ordered: false, rawResult: true });
+            console.log('Raw insertion result:', JSON.stringify(result, null, 2));
+            insertedCount = result.insertedCount;
+        } catch (error: any) {
+            console.error('Error during insertion:', error);
+            if (error.writeErrors) {
+                insertionErrorCount = error.writeErrors.length;
+                duplicateErrorCount = error.writeErrors.filter((err: any) => err.code === 11000).length;
+                insertedCount = error.insertedCount;
+            }
+        }
+
+        console.log(`Inserted: ${insertedCount}, Errors: ${insertionErrorCount}, Duplicates: ${duplicateErrorCount}`);
+
+        // Verify the actual count in the database
+        const actualCount = await RawPost.countDocuments({
+            nicheId: new mongoose.Types.ObjectId(nicheId),
+            'schedule.month': month,
+            'schedule.year': yearInNumber,
         });
+        console.log(`Actual count in database: ${actualCount}`);
 
         let successMessage = 'RawPosts created successfully';
 

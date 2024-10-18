@@ -19,6 +19,8 @@ export async function apiHandler(
             params,
         });
 
+        console.log(response.data.message);
+
         return response.data.data;
     } catch (error: any) {
         if (error instanceof AxiosError) {

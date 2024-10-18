@@ -3,7 +3,6 @@ import { errorHandler } from '../utils/errorHandler.util';
 import { successReturn } from '../utils/successReturn.util';
 import axios from 'axios';
 import { apiHandler } from '../utils/apiHandler.util';
-import { uploadToCloud } from '../utils/uploadToCloud.util';
 import AWS from 'aws-sdk';
 import { getMonthAndYear } from '../helpers/getMonthAndYear';
 import { ENV } from '../constants';
@@ -16,62 +15,72 @@ interface Message {
 
 interface TikTokVideo {
     id: string;
-    title: string;
-    views: number;
-    likes: number;
-    comments: number;
-    shares: number;
-    bookmarks: number;
-    hashtags: string[];
-    channel: {
-        name: string;
-        username: string;
+    text: string;
+    createTime: number;
+    createTimeISO: string;
+    authorMeta: {
         id: string;
-        url: string;
-        avatar: string;
+        name: string;
+        nickName: string;
         verified: boolean;
-        followers: number;
+        signature: string;
+        avatar: string;
         following: number;
-        videos: number;
+        fans: number;
+        heart: number;
+        video: number;
     };
-    uploadedAt: number;
-    uploadedAtFormatted: string;
-    video: {
-        width: number;
+    musicMeta: {
+        musicName: string;
+        musicAuthor: string;
+        musicOriginal: boolean;
+        playUrl: string;
+        coverMediumUrl: string;
+        musicId: string;
+    };
+    webVideoUrl: string;
+    mediaUrls: string[];
+    videoMeta: {
         height: number;
-        ratio: string;
+        width: number;
         duration: number;
-        url: string;
-        cover: string;
-        thumbnail: string;
+        coverUrl: string;
+        originalCoverUrl: string;
+        definition: string;
+        format: string;
+        downloadAddr: string;
     };
-    song: {
-        id: number;
-        title: string;
-        artist: string;
-        album: string | null;
-        duration: number;
-        cover: string;
-    };
-    postPage: string;
+    diggCount: number;
+    shareCount: number;
+    playCount: number;
+    collectCount: number;
+    commentCount: number;
+    hashtags: { name: string }[];
 }
 
 interface TempPostItem {
     source_url: string;
     originalViews: number;
     source: string;
+    nicheId?: string;
     video_url: string;
+    media_url?: string;
     cover_url: string;
-    media_url: string;
     caption: string;
+    mediaType?: 'REELS';
+    ownerUsername?: string;
     originalVideoPublishSchedule: {
         month: string;
-        year: number;
+        year: number | string;
+    };
+    schedule?: {
+        month: string;
+        year: number | string;
     };
 }
 
 export const lambdaHandler = async (event: SQSEvent): Promise<APIGatewayProxyResult> => {
-    const vulcanQueueUrl = process.env.VulcanQueueUrl || '';
+    const vulcanQueueUrl = process.env.VulcanQueueUrl ?? '';
     const { months } = ENV;
     try {
         const message = JSON.parse(event.Records[0].body) as Message;
@@ -81,7 +90,6 @@ export const lambdaHandler = async (event: SQSEvent): Promise<APIGatewayProxyRes
         const getDatasetUrl = 'https://api.apify.com/v2/datasets/' + datasetId + '/items';
 
         const params = {
-            token: process.env.ApifyToken,
             format: 'json',
         };
 
@@ -103,118 +111,45 @@ export const lambdaHandler = async (event: SQSEvent): Promise<APIGatewayProxyRes
             posts: [],
         };
 
-        // Upload videos and covers to cloud
-        const uploadToCloudPromises = datasetItems.map(async (item) => {
-            const [mediaResult, coverResult] = await Promise.allSettled([
-                uploadToCloud(item.video.url),
-                uploadToCloud(item.video.cover),
-            ]);
+        datasetItems.forEach((item) => {
+            const currentMonth = months[new Date(item.createTime * 1000).getMonth()];
+            const currentYear = new Date(item.createTime * 1000).getFullYear();
 
-            const media_url = mediaResult.status === 'fulfilled' ? mediaResult.value : null;
-            const cover_url = coverResult.status === 'fulfilled' ? coverResult.value : null;
-
-            return {
-                media_url,
-                cover_url,
-                mediaError: mediaResult.status === 'rejected' ? mediaResult.reason : null,
-                coverError: coverResult.status === 'rejected' ? coverResult.reason : null,
-            };
-        });
-        const result = await Promise.allSettled(uploadToCloudPromises);
-
-        const successfulUploads: { media_url: string; cover_url: string }[] = [];
-        const failedUploads = [];
-        const filteredDatasetItems: (TikTokVideo | null)[] = datasetItems.slice();
-
-        result.forEach((res, index) => {
-            if (res.status === 'fulfilled') {
-                if (res.value.media_url && res.value.cover_url) {
-                    successfulUploads.push({ media_url: res.value.media_url, cover_url: res.value.cover_url });
-                } else {
-                    res.value.mediaError && console.log('Error uploading video: ', res.value.mediaError);
-                    res.value.coverError && console.log('Error uploading cover: ', res.value.coverError);
-                    filteredDatasetItems[index] = null;
-                }
-            } else {
-                failedUploads.push({ item: datasetItems[index], reason: res.reason });
-                filteredDatasetItems[index] = null;
-            }
+            createTempPostsInDBBody.posts.push({
+                source_url: item.webVideoUrl,
+                originalViews: item.playCount,
+                source: 'tiktok',
+                nicheId,
+                video_url: item.mediaUrls[0],
+                media_url: item.mediaUrls[0], // Adding media_url to match RawPostItem
+                cover_url: item.videoMeta.coverUrl,
+                caption: item.text,
+                mediaType: 'REELS',
+                ownerUsername: item.authorMeta.name,
+                originalVideoPublishSchedule: {
+                    month: currentMonth,
+                    year: currentYear,
+                },
+                schedule: {
+                    month,
+                    year,
+                },
+            });
         });
 
-        filteredDatasetItems.forEach((item, i) => {
-            if (item) {
-                const uploadResult = result[i];
-                let media_url = null;
-                let cover_url = null;
-
-                if (uploadResult.status === 'fulfilled') {
-                    media_url = uploadResult.value.media_url;
-                    cover_url = uploadResult.value.cover_url;
-                }
-
-                createTempPostsInDBBody.posts.push({
-                    source_url: item.postPage,
-                    originalViews: item.views,
-                    source: 'tiktok',
-                    video_url: item.video.url,
-                    media_url: media_url as string,
-                    cover_url: cover_url as string,
-                    caption: item.title,
-                    originalVideoPublishSchedule: {
-                        month: months[new Date(item.uploadedAt * 1000).getMonth()],
-                        year: new Date(item.uploadedAt * 1000).getFullYear(),
-                    },
-                });
-            }
-        });
-
-        const createTempPostsUrl =   '/rawPosts';
+        const createTempPostsUrl = '/rawPosts';
 
         await apiHandler('post', createTempPostsUrl, createTempPostsInDBBody);
 
-        // Get Collection Page ID Using Name
-
-        const collectionPageName = datasetItems[0].channel.username;
-        const getCollectionPageUsingNameUrl =   '/collectionIGPage/' + collectionPageName;
-
-        const collectionPage = await apiHandler('get', getCollectionPageUsingNameUrl);
-
-        const collectionPageId = collectionPage._id;
-
-        // Add Collection Page to completedCollectionPages
-        const addCollectionPageToCompletedCollectionPagesUrl =
-              '/collectionIGPage/add/completedCollectionPage';
-
-        const addCollectionPageToCompletedCollectionPagesBody = {
-            nicheId,
-            month,
-            year,
-            collectionPageId,
+        // If Niche Post Collection is done put it in vulcan queue
+        const messageParams = {
+            MessageBody: JSON.stringify({ nicheId }),
+            QueueUrl: vulcanQueueUrl,
         };
 
-        await apiHandler(
-            'put',
-            addCollectionPageToCompletedCollectionPagesUrl,
-            addCollectionPageToCompletedCollectionPagesBody,
-        );
+        await sqs.sendMessage(messageParams).promise();
 
-        // Check if Niche Post Collection is done
-        const nichePostCollectionIsDoneUrl =
-              '/NicheApifyDatasetStatus/checkNichePostCollection/' + nicheId + '/' + month + '/' + year;
-        const nichePostCollectionIsDoneResponse = await apiHandler('get', nichePostCollectionIsDoneUrl);
-
-        // If Niche Post Collection is done put it in vulcan queue
-
-        if (nichePostCollectionIsDoneResponse.completed) {
-            const params = {
-                MessageBody: JSON.stringify({ nicheId }),
-                QueueUrl: vulcanQueueUrl,
-            };
-
-            await sqs.sendMessage(params).promise();
-        }
-
-        return successReturn('Message received and stored posts in DB', event.Records);
+        return successReturn('Message received and stored posts in DB');
     } catch (error) {
         return errorHandler(error);
     }
