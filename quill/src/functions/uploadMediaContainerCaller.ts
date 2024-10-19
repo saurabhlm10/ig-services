@@ -10,6 +10,7 @@ const lambda = new AWS.Lambda();
 
 interface Page {
     name: string;
+    stage: string;
 }
 
 interface Event {
@@ -30,10 +31,26 @@ export const lambdaHandler = async (event: Event): Promise<APIGatewayProxyResult
             // Get All Pages
             const getAllPagesUrl = '/igpage/all';
             const rawPages: Page[] = await apiHandler('get', getAllPagesUrl);
-            const pages = rawPages.map((page) => page.name);
+            const { time } = getCurrentDateTimeIST();
 
-            // Invoke itself with the pages
-            await invokeLambda(pages, functionName);
+            const pages: Page['name'][] = [];
+
+            rawPages.map((page) => {
+                if (!['6PM', '7PM', '8PM', '9PM', '10PM', '11PM', '12AM'].includes(time)) return;
+                if (page.stage === '1' && ['7PM', '8PM', '9PM', '10PM', '11PM', '12AM'].includes(time)) {
+                    return;
+                }
+                if (page.stage === '2' && ['8PM', '9PM', '10PM', '11PM', '12AM'].includes(time)) {
+                    return;
+                }
+
+                pages.push(page.name);
+            });
+
+            if (pages.length) {
+                // Invoke itself with the pages
+                await invokeLambda(pages, functionName);
+            }
         }
 
         return successReturn('Processing started');
